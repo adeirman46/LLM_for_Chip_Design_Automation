@@ -22,7 +22,6 @@ st.title("🤖 LLM-Powered Chip Design Automation Flow")
 st.write("A multi-module workflow to generate, simulate, and synthesize complex digital designs.")
 
 # --- Constants ---
-# MODEL_NAME = "deepseek-ai/DeepSeek-R1-0528-Qwen3-8B"
 MODEL_NAME = "Qwen/Qwen2.5-7B"
 HOME_DIR = os.path.expanduser("~")
 OPENLANE_DIR = os.path.join(HOME_DIR, "OpenLane")
@@ -82,21 +81,38 @@ def get_port_range(bits_val):
 def extract_verilog_code(raw_output):
     """
     Extracts Verilog code cleanly, looking for markdown-style code blocks
-    or falling back to the first 'module' and the last 'endmodule'.
+    or falling back to the first 'module' or '`include' and the last 'endmodule'.
     """
     verilog_match = re.search(r'```verilog(.*?)```', raw_output, re.DOTALL)
     if verilog_match:
-        code = verilog_match.group(1).strip()
-    else:
-        code = raw_output
-
+        # Return the entire content of the markdown block
+        return verilog_match.group(1).strip()
+    
+    # Fallback if no markdown block is found
     try:
-        start_index = code.index("module")
-        end_index = code.rindex("endmodule") + len("endmodule")
-        return code[start_index:end_index].strip()
+        # Find the start: either the first `include or the first module
+        include_match = re.search(r'`include', raw_output)
+        module_match = re.search(r'module', raw_output)
+        
+        start_index = -1
+        if include_match and module_match:
+            start_index = min(include_match.start(), module_match.start())
+        elif include_match:
+            start_index = include_match.start()
+        elif module_match:
+            start_index = module_match.start()
+        else:
+            # If neither is found, can't determine code boundaries
+            st.warning("Could not find '`include' or 'module' keywords in the LLM output.")
+            return raw_output.strip()
+
+        # Find the last 'endmodule'
+        end_index = raw_output.rindex("endmodule") + len("endmodule")
+        return raw_output[start_index:end_index].strip()
     except ValueError:
         st.warning("Could not find 'module' and 'endmodule' keywords in the LLM output. Displaying raw output.")
         return raw_output.strip()
+
 
 def load_model():
     """
@@ -219,7 +235,6 @@ with col1:
         st.text_input("Module Name", key="new_module_name")
         st.checkbox("Set as Top-Level Module for Synthesis", key="new_module_is_toplevel")
         
-        # HIERARCHY SUPPORT: Multi-select box for sub-modules
         available_modules = [d['name'] for d in st.session_state.designs]
         st.multiselect(
             "Instantiate existing modules (for hierarchical design):",
@@ -230,7 +245,6 @@ with col1:
         st.text_area("Module Description", key="new_module_desc",
                      help="Describe the desired functionality. The LLM will use this to generate the internal logic.")
 
-        # --- Parameters ---
         st.subheader("A. Define Parameters")
         param_cols = st.columns([2, 1, 1])
         param_cols[0].text_input("Parameter Name", key="new_param_name")
@@ -244,7 +258,6 @@ with col1:
                 p_col1.markdown(f"- `parameter` **{p['name']}** = `{p['value']}`")
                 p_col2.button("🗑️", key=f"del_param_{p['id']}", on_click=remove_param, args=(p['id'],), help="Remove parameter")
 
-        # --- Ports ---
         st.subheader("B. Define Ports")
         port_cols = st.columns([1, 1, 1, 2, 1])
         port_cols[0].selectbox("Direction", ["input", "output"], key="new_port_dir")
@@ -264,15 +277,17 @@ with col1:
 
         st.divider()
 
-        # --- Generation Button ---
         if st.button("🚀 Generate Verilog Module", type="primary", use_container_width=True):
             if not st.session_state.new_module_name.strip():
                 st.error("Module name is required.")
             else:
                 with st.spinner("Generating Verilog with LLM..."):
-                    # --- Build Hierarchical Context ---
+                    include_statements = ""
                     submodule_context = ""
                     if st.session_state.new_module_submodules:
+                        includes = [f'`include "{name}.v"' for name in st.session_state.new_module_submodules]
+                        include_statements = "\n".join(includes)
+                        
                         submodule_context += "This module must instantiate and connect the following sub-modules, whose Verilog code is provided below:\n"
                         for sub_name in st.session_state.new_module_submodules:
                             sub_design = next((d for d in st.session_state.designs if d['name'] == sub_name), None)
@@ -281,7 +296,6 @@ with col1:
                                 submodule_context += f"```verilog\n{sub_design['code']}\n```\n"
                         submodule_context += "\n"
                     
-                    # --- Build Parameter and Port Definitions ---
                     param_defs_str = ""
                     if st.session_state.new_module_params:
                         params = [f"parameter {p['name']} = {p['value']}" for p in st.session_state.new_module_params]
@@ -289,20 +303,18 @@ with col1:
 
                     port_defs = ",\n".join([f"    {p['direction']} {'' if p['direction'] == 'input' else p['type']} {get_port_range(p['bits'])} {p['name']}" for p in st.session_state.new_module_ports])
 
-                    # --- Assemble Final Prompt ---
                     prompt = (
-                        f"Generate a complete Verilog module named '{st.session_state.new_module_name}'.\n\n"
+                        f"Generate a complete Verilog file content for a module named '{st.session_state.new_module_name}'.\n\n"
                         f"{submodule_context}"
                         f"Functional Description: {st.session_state.new_module_desc}\n\n"
-                        f"If the module has parameters, define them using the `# (parameter ...)` syntax after the module name and before the port list. "
-                        f"The module's parameters and ports are listed below.\n\n"
-                        f"Module Definition:\n"
+                        f"**Instructions:**\n"
+                        f"1. **IMPORTANT**: If instantiating sub-modules, you MUST start the file with these exact `include` statements:\n{include_statements}\n\n"
+                        f"2. If the module has parameters, define them using the `# (parameter ...)` syntax after the module name and before the port list.\n"
+                        f"3. The module's definition is as follows:\n"
                         f"module {st.session_state.new_module_name} {param_defs_str}\n"
                         f"(\n{port_defs}\n);\n\n"
-                        f"Based on all the information above, provide the complete Verilog code for the module, including the internal logic. "
-                        f"Start with `module` and end with `endmodule`."
+                        f"Based on all the information, provide the complete Verilog code, starting with the `include` statements (if any), followed by the module definition and its internal logic. End with `endmodule`."
                     )
-
 
                     raw_code = generate_code_locally(prompt)
                     if raw_code:
@@ -312,7 +324,8 @@ with col1:
                             "testbench": "",
                             "is_toplevel": st.session_state.new_module_is_toplevel,
                             "vcd_path": None,
-                            "sim_output": ""
+                            "sim_output": "",
+                            "openlane_config_str": "" # Initialize config string
                         }
                         if new_design['is_toplevel']:
                             for d in st.session_state.designs:
@@ -321,8 +334,6 @@ with col1:
                         st.session_state.active_design_index = len(st.session_state.designs) - 1
                         
                         st.success(f"Module '{new_design['name']}' generated!")
-                        
-                        # Set the flag to reset the form on the next run
                         st.session_state.form_reset_flag = True
                         st.rerun()
                     else:
@@ -340,7 +351,11 @@ with col2:
 
         with tab1:
             st.subheader("Verilog RTL Code")
-            active_design['code'] = st.text_area("RTL Code", value=active_design['code'], height=400, key=f"code_{idx}")
+            edited_code = st.text_area("RTL Code", value=active_design['code'], height=400, key=f"code_editor_{idx}")
+            if st.button("💾 Save Code", key=f"save_code_{idx}"):
+                active_design['code'] = edited_code
+                st.success("Verilog code saved!")
+                st.toast("Saved!")
 
         with tab2:
             st.subheader("Verilog Testbench")
@@ -364,7 +379,12 @@ Provide only the Verilog code for the testbench."""
                     else:
                         st.error("Failed to generate testbench.")
             
-            active_design['testbench'] = st.text_area("Testbench Code", value=active_design['testbench'], height=400, key=f"tb_{idx}")
+            edited_tb = st.text_area("Testbench Code", value=active_design['testbench'], height=400, key=f"tb_editor_{idx}")
+            if st.button("💾 Save Testbench", key=f"save_tb_{idx}"):
+                active_design['testbench'] = edited_tb
+                st.success("Testbench code saved!")
+                st.toast("Saved!")
+
 
         with tab3:
             st.subheader("RTL Simulation")
@@ -372,16 +392,24 @@ Provide only the Verilog code for the testbench."""
                 active_design['sim_output'] = ""
                 active_design['vcd_path'] = None
                 with st.spinner("Running Icarus Verilog simulation..."):
-                    design_file = f"{active_design['name']}.v"
+                    # For hierarchical designs, all necessary files must be included in the command
+                    design_files = [f"{d['name']}.v" for d in st.session_state.designs if f'`include "{d["name"]}.v"`' in active_design['code']]
+                    # Add the top module itself
+                    design_files.append(f"{active_design['name']}.v")
+                    
                     tb_file = f"{active_design['name']}_tb.v"
-                    with open(design_file, "w") as f: f.write(active_design['code'])
+                    
+                    # Write all necessary files to disk
+                    for d in st.session_state.designs:
+                        with open(f"{d['name']}.v", "w") as f: f.write(d['code'])
                     with open(tb_file, "w") as f: f.write(active_design['testbench'])
 
                     output_file = f"{active_design['name']}_sim"
                     vcd_file = f"{active_design['name']}.vcd"
                     
                     try:
-                        compile_cmd = ["iverilog", "-o", output_file, design_file, tb_file]
+                        # The compile command needs the testbench and all design files
+                        compile_cmd = ["iverilog", "-o", output_file, tb_file] + list(set(design_files))
                         compile_res = subprocess.run(compile_cmd, capture_output=True, text=True, check=True)
                         run_cmd = ["vvp", output_file]
                         run_res = subprocess.run(run_cmd, capture_output=True, text=True, check=True)
@@ -424,25 +452,31 @@ Provide only the Verilog code for the testbench."""
             else:
                 st.info(f"Top-level module for synthesis: **{top_level_design['name']}**")
                 
-                all_verilog_files = [f"dir::src/{d['name']}.v" for d in st.session_state.designs]
+                # Config persistence logic
+                if not active_design.get('openlane_config_str'):
+                    all_verilog_files = [f"dir::src/{d['name']}.v" for d in st.session_state.designs]
+                    default_config = {
+                        "DESIGN_NAME": top_level_design['name'],
+                        "VERILOG_FILES": all_verilog_files,
+                        "CLOCK_PORT": "clk",
+                        "CLOCK_PERIOD": 10.0,
+                        "DESIGN_IS_CORE": False,
+                        "FP_PDN_CORE_RING": False,
+                        "RT_MAX_LAYER": "met4"
+                    }
+                    active_design['openlane_config_str'] = json.dumps(default_config, indent=4)
+
+                edited_config_str = st.text_area("OpenLane Configuration (config.json)", value=active_design['openlane_config_str'], height=250,
+                                                 help="This config is auto-generated. Edit if needed.", key=f"json_editor_{idx}")
                 
-                default_config = {
-                    "DESIGN_NAME": top_level_design['name'],
-                    "VERILOG_FILES": all_verilog_files,
-                    "CLOCK_PORT": "clk",
-                    "CLOCK_PERIOD": 10.0,
-                    "DESIGN_IS_CORE": False,
-                    "FP_PDN_CORE_RING": False,
-                    "RT_MAX_LAYER": "met4"
-                }
-                
-                config_str = json.dumps(default_config, indent=4)
-                edited_config_str = st.text_area("OpenLane Configuration (config.json)", value=config_str, height=250,
-                                                 help="This config is auto-generated. Edit if needed.")
+                if st.button("💾 Save Config", key=f"save_json_{idx}"):
+                    active_design['openlane_config_str'] = edited_config_str
+                    st.success("OpenLane config saved!")
+                    st.toast("Saved!")
 
                 if st.button("🛠️ Synthesize Chip", key=f"synth_{idx}", type="primary"):
                     try:
-                        user_config = json.loads(edited_config_str)
+                        user_config = json.loads(active_design['openlane_config_str'])
                         design_name = user_config["DESIGN_NAME"]
                         design_dir = os.path.join(OPENLANE_DIR, "designs", design_name)
                         src_dir = os.path.join(design_dir, "src")

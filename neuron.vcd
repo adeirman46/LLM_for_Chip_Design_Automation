@@ -1,0 +1,88 @@
+$date
+	Fri Jul  4 19:03:03 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	100ps
+$end
+$scope module neuron_tb $end
+$var wire 33 ! y [32:0] $end
+$var reg 1 " clk $end
+$var reg 16 # x1 [15:0] $end
+$var reg 16 $ x2 [15:0] $end
+$scope module DUT $end
+$var wire 1 " clk $end
+$var wire 16 % x1 [15:0] $end
+$var wire 16 & x2 [15:0] $end
+$var wire 32 ' y2 [31:0] $end
+$var wire 33 ( y1 [32:0] $end
+$var reg 33 ) y [32:0] $end
+$scope module mac1 $end
+$var wire 16 * a [15:0] $end
+$var wire 16 + b [15:0] $end
+$var wire 1 " clk $end
+$var wire 16 , x [15:0] $end
+$var reg 33 - y [32:0] $end
+$upscope $end
+$scope module mac2 $end
+$var wire 16 . a [15:0] $end
+$var wire 16 / b [15:0] $end
+$var wire 1 " clk $end
+$var wire 16 0 x [15:0] $end
+$var reg 33 1 y [32:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx 1
+b0 0
+b1 /
+b1 .
+bx -
+b0 ,
+b1 +
+b1 *
+bx )
+bx (
+bx '
+b0 &
+b0 %
+b0 $
+b0 #
+0"
+bx !
+$end
+#50
+b1 '
+b1 (
+b1 -
+b1 1
+1"
+#100
+0"
+b1 #
+b1 %
+b1 ,
+#150
+b10 !
+b10 )
+b10 (
+b10 -
+1"
+#200
+0"
+b1 $
+b1 &
+b1 0
+#250
+b10 '
+b10 1
+b11 !
+b11 )
+1"
+#300
+0"

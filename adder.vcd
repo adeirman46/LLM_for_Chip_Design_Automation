@@ -1,0 +1,68 @@
+$date
+	Sat Jul  5 01:29:19 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	100ps
+$end
+$scope module adder_tb $end
+$var wire 33 ! Y [32:0] $end
+$var reg 32 " A [31:0] $end
+$var reg 32 # B [31:0] $end
+$var reg 1 $ clk $end
+$scope module uut $end
+$var wire 32 % A [31:0] $end
+$var wire 32 & B [31:0] $end
+$var wire 1 $ clk $end
+$var reg 33 ' Y [32:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx '
+b0 &
+b0 %
+0$
+b0 #
+b0 "
+bx !
+$end
+#50
+b0 !
+b0 '
+1$
+#100
+0$
+b1 #
+b1 &
+b1 "
+b1 %
+#150
+b10 !
+b10 '
+1$
+#200
+0$
+b11 #
+b11 &
+b10 "
+b10 %
+#250
+b101 !
+b101 '
+1$
+#300
+0$
+b101 #
+b101 &
+b100 "
+b100 %
+#350
+b1001 !
+b1001 '
+1$
+#400
+0$

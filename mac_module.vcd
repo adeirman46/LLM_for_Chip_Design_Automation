@@ -1,0 +1,54 @@
+$date
+	Fri Jul  4 18:34:49 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	100ps
+$end
+$scope module mac_module_tb $end
+$var wire 65 ! y [64:0] $end
+$var reg 32 " a [31:0] $end
+$var reg 32 # b [31:0] $end
+$var reg 1 $ clk $end
+$var reg 32 % x [31:0] $end
+$scope module uut $end
+$var wire 32 & a [31:0] $end
+$var wire 32 ' b [31:0] $end
+$var wire 1 $ clk $end
+$var wire 32 ( x [31:0] $end
+$var reg 65 ) y [64:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx )
+b0 (
+b0 '
+b0 &
+b0 %
+0$
+b0 #
+b0 "
+bx !
+$end
+#50
+b0 !
+b0 )
+1$
+#100
+0$
+b11 #
+b11 '
+b10 %
+b10 (
+b1 "
+b1 &
+#150
+b101 !
+b101 )
+1$
+#200
+0$
