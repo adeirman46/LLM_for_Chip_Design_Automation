@@ -1,0 +1,77 @@
+magic
+tech sky130A
+timestamp 1745128169
+<< nwell >>
+rect 0 180 430 380
+<< psubdiff >>
+rect 0 -20 20 100
+<< nsubdiff >>
+rect 0 280 20 380
+<< psubdiffcont >>
+rect 5 -15 15 95
+<< nsubdiffcont >>
+rect 5 285 15 375
+<< pdiff >>
+rect 40 220 390 270
+<< ndiff >>
+rect 40 30 390 80
+<< pmos >>
+rect 85 230 115 260
+rect 185 230 215 260
+rect 325 230 355 260
+<< nmos >>
+rect 85 40 115 70
+rect 185 40 215 70
+rect 325 40 355 70
+<< poly >>
+rect 85 0 115 300
+rect 185 0 215 300
+rect 325 0 355 300
+rect 95 280 335 290
+rect 195 10 335 20
+<< locali >>
+rect 5 -15 15 95
+rect 5 285 15 375
+rect 55 230 75 260
+rect 55 40 75 70
+rect 140 230 160 260
+rect 140 40 160 70
+rect 240 230 260 260
+rect 240 40 260 70
+rect 370 230 385 260
+rect 370 40 385 70
+rect 280 230 300 260
+rect 280 40 300 70
+rect 95 50 105 60
+rect 195 240 205 250
+<< viali >>
+rect 5 -15 15 95
+rect 5 285 15 375
+rect 55 40 75 260
+rect 140 40 160 260
+rect 240 40 260 260
+rect 370 230 385 260
+rect 370 40 385 70
+rect 280 40 300 260
+rect 95 50 105 60
+rect 195 240 205 250
+<< metal1 >>
+rect 0 -20 430 0
+rect 0 360 430 380
+rect 0 -20 20 380
+rect 55 40 75 260
+rect 140 40 160 260
+rect 240 40 260 260
+rect 370 230 385 360
+rect 370 40 385 0
+rect 280 40 300 260
+rect 95 55 280 65
+rect 195 245 280 255
+<< labels >>
+rlabel metal1 55 40 75 260 1 A
+rlabel metal1 240 40 260 260 1 B
+rlabel poly 325 0 355 300 1 SEL
+rlabel metal1 140 40 160 260 1 Y
+rlabel metal1 215 370 215 370 1 vdd
+rlabel metal1 215 -10 215 -10 1 gnd
+<< end >>

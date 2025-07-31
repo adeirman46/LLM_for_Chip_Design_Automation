@@ -1,0 +1,62 @@
+magic
+tech sky130A
+timestamp 1715293883
+<< nwell >>
+rect 50 300 650 540
+<< pdiff >>
+rect 150 380 450 440
+rect 150 470 450 530
+<< ndiff >>
+rect 150 80 450 140
+rect 150 170 450 230
+rect 150 260 450 320
+<< ntap >>
+rect 550 460 610 520
+<< ptap >>
+rect 550 80 610 140
+<< poly >>
+rect 100 180 260 210
+rect 200 60 260 540
+rect 100 390 400 420
+rect 340 60 400 540
+<< licon1 >>
+rect 110 185 140 205
+rect 110 395 140 415
+rect 180 100 420 120
+rect 180 280 420 300
+rect 180 400 420 420
+rect 180 490 420 510
+rect 560 100 600 120
+rect 560 480 600 500
+<< viali >>
+rect 80 185 110 205
+rect 80 395 110 415
+rect 180 40 420 60
+rect 560 40 600 60
+rect 180 540 420 560
+rect 560 540 600 560
+rect 500 330 530 350
+<< li1 >>
+rect 80 185 140 205
+rect 80 395 140 415
+rect 180 40 420 120
+rect 560 40 600 120
+rect 180 490 420 560
+rect 560 480 600 560
+rect 180 280 420 300
+rect 180 400 420 420
+rect 290 280 310 420
+rect 290 330 530 350
+<< metal1 >>
+rect 0 540 700 600
+rect 0 0 700 60
+rect 0 180 110 210
+rect 0 390 110 420
+rect 500 320 700 360
+<< labels >>
+rlabel metal1 0 180 110 210 5 A
+rlabel metal1 0 390 110 420 5 B
+rlabel metal1 500 320 700 360 5 Y
+rlabel metal1 0 540 700 600 5 vcc
+rlabel metal1 0 0 700 60 5 vss
+<< end >>

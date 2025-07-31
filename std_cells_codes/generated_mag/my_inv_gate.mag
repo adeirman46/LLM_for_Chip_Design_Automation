@@ -1,0 +1,118 @@
+magic
+tech sky130A
+timestamp 1742914386
+<< nwell >>
+rect -75 110 80 300
+<< nmos >>
+rect 0 -15 15 30
+<< pmos >>
+rect 0 145 15 190
+<< ndiff >>
+rect -40 20 0 30
+rect -40 -5 -35 20
+rect -15 -5 0 20
+rect -40 -15 0 -5
+rect 15 20 55 30
+rect 15 -5 30 20
+rect 50 -5 55 20
+rect 15 -15 55 -5
+<< pdiff >>
+rect -40 180 0 190
+rect -40 155 -35 180
+rect -15 155 0 180
+rect -40 145 0 155
+rect 15 180 55 190
+rect 15 155 30 180
+rect 50 155 55 180
+rect 15 145 55 155
+<< ndiffc >>
+rect -35 -5 -15 20
+rect 30 -5 50 20
+<< pdiffc >>
+rect -35 155 -15 180
+rect 30 155 50 180
+<< psubdiff >>
+rect -45 -60 5 -45
+rect -45 -85 -30 -60
+rect -10 -85 5 -60
+rect -45 -100 5 -85
+<< nsubdiff >>
+rect -50 260 0 275
+rect -50 235 -35 260
+rect -15 235 0 260
+rect -50 220 0 235
+<< psubdiffcont >>
+rect -30 -85 -10 -60
+<< nsubdiffcont >>
+rect -35 235 -15 260
+<< poly >>
+rect 0 190 15 205
+rect 0 95 15 145
+rect -40 85 15 95
+rect -40 60 -30 85
+rect -10 60 15 85
+rect -40 50 15 60
+rect 0 30 15 50
+rect 0 -30 15 -15
+<< polycont >>
+rect -30 60 -10 85
+<< locali >>
+rect -50 260 0 275
+rect -50 235 -35 260
+rect -15 235 0 260
+rect -50 220 0 235
+rect -35 190 -15 220
+rect -40 180 -10 190
+rect -40 155 -35 180
+rect -15 155 -10 180
+rect -40 145 -10 155
+rect 25 180 55 190
+rect 25 155 30 180
+rect 50 155 55 180
+rect 25 145 55 155
+rect 30 95 50 145
+rect -40 85 0 95
+rect -40 60 -30 85
+rect -10 60 0 85
+rect -40 50 0 60
+rect 30 85 90 95
+rect 30 60 60 85
+rect 80 60 90 85
+rect 30 50 90 60
+rect 30 30 50 50
+rect -40 20 -10 30
+rect -40 -5 -35 20
+rect -15 -5 -10 20
+rect -40 -15 -10 -5
+rect 25 20 55 30
+rect 25 -5 30 20
+rect 50 -5 55 20
+rect 25 -15 55 -5
+rect -35 -45 -15 -15
+rect -45 -60 5 -45
+rect -45 -85 -30 -60
+rect -10 -85 5 -60
+rect -45 -100 5 -85
+<< viali >>
+rect -35 235 -15 260
+rect 60 60 80 85
+rect -30 -85 -10 -60
+<< metal1 >>
+rect -50 260 0 275
+rect -50 235 -35 260
+rect -15 235 0 260
+rect -50 220 0 235
+rect 50 85 90 95
+rect 50 60 60 85
+rect 80 60 90 85
+rect 50 50 90 60
+rect -45 -60 5 -45
+rect -45 -85 -30 -60
+rect -10 -85 5 -60
+rect -45 -100 5 -85
+<< labels >>
+rlabel polycont -30 60 -10 85 1 in
+rlabel viali 60 60 80 85 1 out
+rlabel nwell -35 235 -15 260 1 vdd
+rlabel metal1 -30 -85 -10 -60 1 gnd
+<< end >>
