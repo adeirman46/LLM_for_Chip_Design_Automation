@@ -1,0 +1,53 @@
+magic #  THIS IS INVERTER GATE!!
+tech sky130A
+timestamp 1743223184
+<< nwell >>
+rect -60 -65 115 175
+<< nmos >>
+rect -15 -200 35 -185
+<< pmos >>
+rect -15 0 30 15
+<< ndiff >>
+rect -15 -150 35 -140
+rect -15 -170 -5 -150
+rect 25 -170 35 -150
+rect -15 -185 35 -170
+rect -15 -215 35 -200
+rect -15 -235 -5 -215
+rect 25 -235 35 -215
+rect -15 -240 35 -235
+<< pdiff >>
+rect -15 45 30 55
+rect -15 25 -5 45
+rect 20 25 30 45
+rect -15 15 30 25
+rect -15 -15 30 0
+rect -15 -40 -5 -15
+rect 20 -40 30 -15
+rect -15 -45 30 -40
+<< ndiffc >>
+rect -5 -170 25 -150
+rect -5 -235 25 -215
+<< pdiffc >>
+rect -5 25 20 45
+rect -5 -40 20 -15
+<< psubdiff >>
+rect -60 -300 40 -285
+rect -60 -320 0 -300
+rect 25 -320 40 -300
+rect -60 -335 40 -320
+<< nsubdiff >>
+rect -35 140 90 155
+rect -35 110 -15 140
+rect 25 110 90 140
+rect -35 95 90 110
+<< psubdiffcont >>
+rect 0 -320 25 -300
+<< nsubdiffcont >>
+rect -15 110 25 140
+<< poly >>
+rect -85 0 -15 15
+rect 30 0 125 15
+rect -85 -75 -70 0
+rect -140 -90 -70 -75
+rect -140 -115 -
